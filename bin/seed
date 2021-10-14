@@ -1,0 +1,29 @@
+#!/usr/bin/env ts-node
+
+/* eslint-disable */
+
+const { Sequelize } = require('sequelize');
+const config = require('../config');
+
+const { dbCxn } = config;
+
+const db = new Sequelize(dbCxn);
+
+(async () => {
+  try {
+    await db.authenticate();
+
+    // create tables here
+  } catch (e) {
+    console.error('No datatbase connection', e);
+    process.exit(1);
+  }
+
+  try {
+    await db.close();
+  } catch (e) {
+    console.error('Unable to close database', e);
+  }
+
+  process.exit();
+})();
