@@ -1,6 +1,8 @@
+import axios from 'axios';
 import { Request } from 'express';
+import { processCovidData } from './processing';
 
-import { db } from './db';
+import { db } from './db/index';
 
 export type ParamsDict = Record<string, string | number | boolean>;
 
@@ -16,5 +18,13 @@ export const getOk: View<ParamsDict, { ok: boolean }> = () => {
     })
     .then(() => {
       return { ok: true };
+    });
+};
+
+export const refreshCovidData: any = () => {
+  return axios
+    .get('https://covid.ourworldindata.org/data/owid-covid-data.json')
+    .then((res) => {
+      return processCovidData(res.data);
     });
 };

@@ -8,4 +8,5 @@ export const startDb = (cxn: string | Sequelize) => {
   } else {
     db = cxn;
   }
+  return db;
 };

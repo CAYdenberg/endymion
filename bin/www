@@ -2,12 +2,12 @@
 
 /* eslint-disable */
 
-const config = require('../config')
+const config = require('../config');
 
-const appCreator = require('../src/index').default
+const appCreator = require('../src/index').default;
 
-const app = appCreator(config)
+const app = appCreator(config);
 
 const server = app.listen(config.port, () => {
-  console.log(`Express server listening on port ${server.address().port}`)
-})
+  console.log(`Express server listening on port ${server.address().port}`);
+});

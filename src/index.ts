@@ -1,9 +1,8 @@
 import errorHandler from 'errorhandler';
 import express, { NextFunction, Request, Response } from 'express';
 import { getReasonPhrase, getStatusCode } from 'http-status-codes';
-
-import { startDb } from './db';
-import { getOk, ParamsDict, View } from './views';
+import { startDb } from './db/index';
+import { getOk, refreshCovidData, ParamsDict, View } from './views';
 
 interface Config {
   port: number;
@@ -32,6 +31,7 @@ export default (config: Config) => {
   app.use(express.json());
 
   app.get('/', useAsView(getOk));
+  app.get('/refresh-covid-data', useAsView(refreshCovidData));
 
   /**
    * Error Handler.

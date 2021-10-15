@@ -2,12 +2,11 @@
 
 /* eslint-disable */
 
-const { Sequelize } = require('sequelize');
 const config = require('../config');
+const { startDb } = require('../src/db');
 
 const { dbCxn } = config;
-
-const db = new Sequelize(dbCxn);
+const db = startDb(dbCxn);
 
 (async () => {
   try {

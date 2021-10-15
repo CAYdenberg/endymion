@@ -1,6 +1,6 @@
 import { Request } from 'express';
 
-import { startDb } from '../db';
+import { startDb } from '../db/index';
 import { getOk } from '../views';
 
 const req = {
