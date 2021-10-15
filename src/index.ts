@@ -1,23 +1,33 @@
 import errorHandler from 'errorhandler';
 import express, { NextFunction, Request, Response } from 'express';
-import { getReasonPhrase, getStatusCode } from 'http-status-codes';
+import rateLimit from 'express-rate-limit';
 import { startDb } from './db/index';
-import { getOk, refreshCovidData, ParamsDict, View } from './views';
+import {
+  getOk,
+  refreshCovidData,
+  ParamsDict,
+  View,
+  getChartData,
+  getCountry,
+} from './views';
+import { requireKey } from './middleware';
+import HttpError from './HttpError';
 
 interface Config {
   port: number;
   nodeEnv: 'development' | 'test' | 'production';
   dbCxn: string;
+  reqPerTenMin: number;
+  publicAccessKey: string;
+  internalAccessKey: string;
 }
-
-// TODO: Request and Request body validation middleware
 
 const useAsView =
   <ReqParams extends ParamsDict, ResParams extends ParamsDict>(
     view: View<ReqParams, ResParams>
   ) =>
   (req: Request, res: Response, next: NextFunction) => {
-    return view(req.body, req)
+    return view(req as any)
       .then((json) => {
         res.json(json);
       })
@@ -30,8 +40,30 @@ export default (config: Config) => {
   const app = express();
   app.use(express.json());
 
-  app.get('/', useAsView(getOk));
-  app.get('/refresh-covid-data', useAsView(refreshCovidData));
+  app.use(
+    rateLimit({
+      windowMs: 10 * 60 * 1000,
+      max: config.reqPerTenMin,
+    })
+  );
+
+  app.get('/', requireKey(config.publicAccessKey), useAsView(getOk));
+  app.get(
+    '/chart-data',
+    requireKey(config.publicAccessKey),
+    useAsView(getChartData)
+  );
+  app.get(
+    '/country/:key',
+    requireKey(config.publicAccessKey),
+    useAsView(getCountry)
+  );
+
+  app.get(
+    '/cron/refresh-covid-data',
+    requireKey(config.internalAccessKey),
+    useAsView(refreshCovidData)
+  );
 
   /**
    * Error Handler.
@@ -44,13 +76,11 @@ export default (config: Config) => {
       // eslint-disable-next-line no-console
       console.error(err);
 
-      const statusCode = getStatusCode(err.message);
-
-      if (statusCode) {
-        res.status(statusCode);
+      if (err instanceof HttpError) {
+        res.status(err.status);
         res.json({
           ok: false,
-          message: getReasonPhrase(err.message),
+          message: err.message,
         });
       } else if (err) {
         res.status(500).send({

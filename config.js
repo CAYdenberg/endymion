@@ -8,4 +8,7 @@ module.exports = {
   dbCxn:
     process.env.DATABASE_CXN ||
     'postgres://pguser:pgpassword@localhost:5432/endymionDB',
+  reqPerTenMin: process.env.REQUESTS_PER_TEN_MIN || 200,
+  publicAccessKey: process.env.PUBLIC_ACCESS_KEY || '',
+  internalAccessKey: process.env.INTERNAL_ACCESS_KEY || '',
 };

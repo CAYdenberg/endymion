@@ -1,9 +1,9 @@
-interface CountryName {
+export interface CountryName {
   key: string;
   label: string;
 }
 
-interface CountryData {
+export interface CountryData {
   key: string;
   country: string;
   pop: number;
@@ -29,6 +29,11 @@ export const slidingAverage = (kernel: number) => (data: number[]) => {
   });
 };
 
+export const transformToY = (value: number, pop: number) => {
+  const raw = Math.log10((1e5 * value) / pop);
+  return raw > -6 ? raw : -6;
+};
+
 export const processCovidData = (json: any) => {
   const timelineLabels: string[] = json['CHN'].data.map((day: any) => day.date);
   const countryNames: CountryName[] = Object.keys(json).map((key: string) => ({
@@ -52,7 +57,7 @@ export const processCovidData = (json: any) => {
       })),
       coords: json[key].data.map((day: any, i: number) => {
         const x = timelineLabels.findIndex((date) => date === day.date);
-        const y = (1e5 * newCasesSmoothed[i]) / json[key].population;
+        const y = transformToY(newCasesSmoothed[i], json[key].population);
         return [x, y];
       }),
     };

@@ -12,6 +12,8 @@ const db = startDb(dbCxn);
   try {
     await db.authenticate();
 
+    await db.sync({ force: true });
+
     // create tables here
   } catch (e) {
     console.error('No datatbase connection', e);

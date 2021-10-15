@@ -6,6 +6,9 @@ const app = appCreator({
   port: 3030,
   nodeEnv: 'test',
   dbCxn: 'sqlite::memory:',
+  reqPerTenMin: 200,
+  publicAccessKey: '',
+  internalAccessKey: '',
 });
 
 describe('/', () => {
