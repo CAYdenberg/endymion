@@ -1,6 +1,7 @@
 import errorHandler from 'errorhandler';
 import express, { NextFunction, Request, Response } from 'express';
 import rateLimit from 'express-rate-limit';
+import cors from 'cors';
 import { startDb } from './db/index';
 import {
   getOk,
@@ -46,6 +47,7 @@ export default (config: Config) => {
       max: config.reqPerTenMin,
     })
   );
+  app.use(cors());
 
   app.get('/', requireKey(config.publicAccessKey), useAsView(getOk));
   app.get(
