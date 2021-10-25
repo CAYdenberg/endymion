@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import HttpError from './HttpError';
+import { HttpError } from './Http';
 
 export const requireKey =
   (key?: string) => (req: Request, _: Response, next: NextFunction) => {

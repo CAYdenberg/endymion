@@ -1,18 +1,11 @@
 import axios from 'axios';
-import { Request } from 'express';
 import { processCovidData } from './processing';
 
-import { db } from './db/index';
-import { Constants, createConstant } from './db/Constants';
+import { db } from '../db/index';
+import { Constants, createConstant } from '../db/Constants';
 import { StatusCodes } from 'http-status-codes';
-import { Country, upsertCountryData } from './db/Country';
-import HttpError from './HttpError';
-
-export type ParamsDict = Record<string, string | number | boolean | object>;
-
-export type View<ReqParams extends ParamsDict, ResParams extends ParamsDict> = (
-  req: Request<ReqParams>
-) => Promise<ResParams>;
+import { Country, upsertCountryData } from '../db/Country';
+import { HttpError, View, ParamsDict } from '../Http';
 
 export const getOk: View<ParamsDict, { ok: boolean }> = () => {
   return db
