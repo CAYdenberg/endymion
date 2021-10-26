@@ -6,8 +6,8 @@ import sys
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 UPLOAD_DIR = os.path.join(CURRENT_DIR, '..', '..', 'temp')
 
-file = sys.argv[1]
-fullPath = os.path.join(UPLOAD_DIR, file)
+path = sys.argv[1]
+fullPath = os.path.join(CURRENT_DIR, '../..', path)
 
 record = SeqIO.read(fullPath, 'abi')
 # FWO_1 contains the base order
