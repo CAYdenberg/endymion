@@ -6,13 +6,25 @@ import { startDb } from './db/index';
 import {
   getOk,
   refreshCovidData,
-  ParamsDict,
-  View,
   getChartData,
   getCountry,
-} from './views';
+} from './covid/views';
 import { requireKey } from './middleware';
-import HttpError from './HttpError';
+import { HttpError, View, ParamsDict } from './Http';
+import multer from 'multer';
+import { parseChroma } from './seq/views';
+
+const storage = multer.diskStorage({
+  destination: (_, __, cb) => {
+    cb(null, 'temp');
+  },
+  filename: (_, __, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+    cb(null, '-' + uniqueSuffix);
+  },
+});
+
+const upload = multer({ storage });
 
 interface Config {
   port: number;
@@ -65,6 +77,13 @@ export default (config: Config) => {
     '/cron/refresh-covid-data',
     requireKey(config.internalAccessKey),
     useAsView(refreshCovidData)
+  );
+
+  app.post(
+    '/parse-chroma',
+    requireKey(config.publicAccessKey),
+    upload.single('file'),
+    useAsView(parseChroma)
   );
 
   /**
