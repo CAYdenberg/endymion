@@ -7,9 +7,21 @@ import fs from 'fs';
 const PYTHON = path.join(__dirname, '../..', 'venv/bin/python3.6');
 const SCRIPT = path.join(__dirname, 'seqio.py');
 
+const extension = (filename: string) => {
+  const parts = filename.split('.');
+  if (parts.length < 2) {
+    return null;
+  }
+  return parts[parts.length - 1];
+};
+
 export const parseChroma: View<{}, {}> = (req) => {
   return new Promise((resolve, reject) => {
     if (!req.file?.path) {
+      return reject(new HttpError(StatusCodes.BAD_REQUEST));
+    }
+
+    if (extension(req.file.originalname) !== 'ab1') {
       return reject(new HttpError(StatusCodes.BAD_REQUEST));
     }
 

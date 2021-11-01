@@ -1,13 +1,11 @@
-#!/usr/bin/env ts-node
+#!/usr/bin/env node
 
 /* eslint-disable */
 
 const config = require('../config');
 
-const appCreator = require('../src/index').default;
+const appCreator = require('../dist/src/index').default;
 
 const app = appCreator(config);
 
-const server = app.listen(config.port, () => {
-  console.log(`Express server listening on port ${server.address().port}`);
-});
+app.listen(config.port);
