@@ -34,3 +34,13 @@ export const parseChroma: View<{}, {}> = (req) => {
     });
   });
 };
+
+export const egChroma: View<{}, {}> = () => {
+  return new Promise((resolve, reject) => {
+    exec(`${PYTHON} ${SCRIPT} temp/test.ab1`, (err, res) => {
+      err
+        ? reject(new HttpError(StatusCodes.UNPROCESSABLE_ENTITY))
+        : resolve(JSON.parse(res));
+    });
+  });
+};

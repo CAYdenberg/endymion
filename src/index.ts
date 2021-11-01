@@ -12,7 +12,7 @@ import {
 import { requireKey } from './middleware';
 import { HttpError, View, ParamsDict } from './Http';
 import multer from 'multer';
-import { parseChroma } from './seq/views';
+import { egChroma, parseChroma } from './seq/views';
 
 const storage = multer.diskStorage({
   destination: (_, __, cb) => {
@@ -84,6 +84,12 @@ export default (config: Config) => {
     requireKey(config.publicAccessKey),
     upload.single('file'),
     useAsView(parseChroma)
+  );
+
+  app.get(
+    '/eg-chroma',
+    requireKey(config.publicAccessKey),
+    useAsView(egChroma)
   );
 
   /**
