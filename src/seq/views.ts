@@ -4,8 +4,8 @@ import { StatusCodes } from 'http-status-codes';
 import path from 'path';
 import fs from 'fs';
 
-const PYTHON = path.join(__dirname, '../..', 'venv/bin/python3.6');
-const SCRIPT = path.join(__dirname, 'seqio.py');
+const PYTHON = path.join(process.cwd(), 'venv/bin/python3.6');
+const SCRIPT = path.join(process.cwd(), 'src/seq/seqio.py');
 
 const extension = (filename: string) => {
   const parts = filename.split('.');
@@ -30,7 +30,7 @@ export const parseChroma: View<{}, {}> = (req) => {
         ? reject(new HttpError(StatusCodes.UNPROCESSABLE_ENTITY))
         : resolve(JSON.parse(res));
 
-      fs.unlinkSync(path.join(__dirname, '../..', req.file!.path));
+      fs.unlinkSync(path.join(process.cwd(), req.file!.path));
     });
   });
 };
